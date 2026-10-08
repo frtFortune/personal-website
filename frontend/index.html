@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Engineer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#3b82f6', 600: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased min-h-screen">
+    <nav class="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <span class="font-bold text-lg tracking-tight">Portfolio</span>
+            <div class="flex items-center space-x-6 text-sm text-zinc-400">
+                <a href="#about" class="hover:text-zinc-100 transition">About</a>
+                <a href="#projects" class="hover:text-zinc-100 transition">Projects</a>
+                <a href="#skills" class="hover:text-zinc-100 transition">Skills</a>
+                <a href="#contact" class="hover:text-zinc-100 transition">Contact</a>
+                <button onclick="openMessagesModal()" class="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition flex items-center gap-2">
+                    <span>Inbox</span>
+                    <span id="message-badge" class="hidden px-1.5 py-0.5 rounded-full bg-blue-600 text-white font-mono text-[10px]">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-12 space-y-24">
+        <section id="about" class="space-y-4">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">Software Engineer</span>
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Building robust full-stack applications.</h1>
+            <p class="text-zinc-400 max-w-2xl text-lg">Focusing on modern web engineering, clean architecture, and Python backends.</p>
+        </section>
+
+        <section id="projects" class="space-y-6">
+            <h2 class="text-2xl font-bold tracking-tight">Projects</h2>
+            <div id="filter-bar" class="flex flex-wrap gap-2"></div>
+            <div id="projects-container" class="grid sm:grid-cols-2 gap-6"></div>
+        </section>
+
+        <section id="skills" class="space-y-6">
+            <h2 class="text-2xl font-bold tracking-tight">Tech Stack</h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-sm">Python</span>
+                <span class="px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-sm">FastAPI</span>
+                <span class="px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-sm">JavaScript</span>
+                <span class="px-3 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-sm">Tailwind CSS</span>
+            </div>
+        </section>
+
+        <section id="contact" class="space-y-6 max-w-xl">
+            <h2 class="text-2xl font-bold tracking-tight">Get in Touch</h2>
+            <form id="contact-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-400 mb-1">Name</label>
+                    <input type="text" id="contact-name" required class="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-2 text-zinc-100 focus:outline-none focus:border-zinc-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-400 mb-1">Email</label>
+                    <input type="email" id="contact-email" required class="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-2 text-zinc-100 focus:outline-none focus:border-zinc-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-400 mb-1">Message</label>
+                    <textarea id="contact-message" rows="4" required class="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-2 text-zinc-100 focus:outline-none focus:border-zinc-600"></textarea>
+                </div>
+                <button type="submit" class="bg-zinc-100 text-zinc-950 px-5 py-2.5 rounded-lg font-medium hover:bg-zinc-200 transition">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Admin Messages Modal -->
+    <div id="messages-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-zinc-100">Saved Messages</h3>
+                    <p class="text-xs text-zinc-400">Retrieved live from <code class="text-blue-400">backend/data/messages.json</code></p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="fetchMessages()" class="text-xs px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition border border-zinc-700">Refresh</button>
+                    <button onclick="closeMessagesModal()" class="text-zinc-400 hover:text-zinc-100 text-xl font-bold leading-none px-2">&times;</button>
+                </div>
+            </div>
+            <div id="messages-list" class="p-6 overflow-y-auto space-y-4 flex-1">
+                <!-- Messages populated via app.js -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

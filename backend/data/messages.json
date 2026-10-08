@@ -1,0 +1,23 @@
+[
+  {
+    "id": "a2d78f41-3a50-4db4-9cf2-8c4130c6c2d1",
+    "name": "Fortune",
+    "email": "frtfortuneiji@gmail.com",
+    "message": "Hey",
+    "created_at": "2026-10-08T21:47:29.631587+00:00"
+  },
+  {
+    "id": "baa10398-44da-48f2-998a-bfae4fb11b0c",
+    "name": "Fortune",
+    "email": "frtfortuneiji@gmail.com",
+    "message": "Hey",
+    "created_at": "2026-10-08T22:09:22.686031+00:00"
+  },
+  {
+    "id": "ac77cdb3-a45e-41d2-90f1-f5f394e265f2",
+    "name": "Fortune",
+    "email": "frtfortuneiji@gmail.com",
+    "message": "Hey",
+    "created_at": "2026-10-08T22:13:05.303469+00:00"
+  }
+]
