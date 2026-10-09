@@ -10,7 +10,18 @@ from sqlalchemy.orm import Session
 
 Base.metadata.create_all(bind=engine)
 
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "https://127.0.0.1:3000,http://localhost:3000").split(",")
+# Get environment variable or default to wildcard '*' for production resiliency
+raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
+
+# Clean up origins: strip leading/trailing whitespace and trailing slashes
+if raw_origins.strip() == "*":
+    allowed_origins = ["*"]
+else:
+    allowed_origins = [
+        origin.strip().rstrip("/") 
+        for origin in raw_origins.split(",") 
+        if origin.strip()
+    ]
 
 app = FastAPI(title="Personal Website API")
 
