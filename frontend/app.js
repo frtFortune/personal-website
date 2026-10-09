@@ -1,6 +1,6 @@
 const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000/api"
-    : "https://personal-website-api.onrender.com/api";
+    : "https://personal-website-api-6xtp.onrender.com/api";
 let activeTag = null;
 
 async function fetchProjects(tag = null) {
