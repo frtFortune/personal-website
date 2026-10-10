@@ -2,7 +2,7 @@ import os
 from typing import Annotated, Any
 
 from database import Base, engine, get_db
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from models import MessageModel, ProjectModel
 from pydantic import BaseModel
@@ -10,8 +10,31 @@ from sqlalchemy.orm import Session
 
 Base.metadata.create_all(bind=engine)
 
-# Get environment variable or default to wildcard '*' for production resiliency
 raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
+
+ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "dev-secret-key")
+
+app = FastAPI(title="Personal Website API")
+
+DbSession = Annotated[Session, Depends(get_db)]
+
+class ProjectCreate(BaseModel):
+    title: str
+    description: str
+    tags: str
+    link: str
+    image_url: str | None = None
+
+
+# Dependency to check X-API-Key header
+def verify_admin_key(x_api_key: str = Header(...)):
+    if x_api_key != ADMIN_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing admin API key"
+        )
+    return x_api_key
+
 
 # Clean up origins: strip leading/trailing whitespace and trailing slashes
 if raw_origins.strip() == "*":
@@ -23,8 +46,6 @@ else:
         if origin.strip()
     ]
 
-app = FastAPI(title="Personal Website API")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -33,21 +54,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DbSession = Annotated[Session, Depends(get_db)]
-
-
 class ContactMessage(BaseModel):
     name: str
     email: str
     message: str
-
-
-class ProjectCreate(BaseModel):
-    title: str
-    description: str
-    tags: list[str]
-    demo_url: str = "#"
-    github_url: str = "#"
 
 
 def seed_projects(db: Session) -> None:

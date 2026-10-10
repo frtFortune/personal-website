@@ -1,20 +1,20 @@
+from collections.abc import Generator
+from typing import Any
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# SQLite database file stored inside the backend folder
-SQLALCHEMY_DATABASE_URL = "sqlite:///./portfolio.db"
+DATABASE_URL = "sqlite:///./portfolio.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},  # Required for SQLite with FastAPI
+    DATABASE_URL, connect_args={"check_same_thread": False}
 )
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-
-def get_db():
+# Explicitly type the generator return hint to satisfy Pylance
+def get_db() -> Generator[Any, None, None]:
     db = SessionLocal()
     try:
         yield db
