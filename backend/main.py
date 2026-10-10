@@ -21,9 +21,46 @@ DbSession = Annotated[Session, Depends(get_db)]
 class ProjectCreate(BaseModel):
     title: str
     description: str
-    tags: str
-    link: str
-    image_url: str | None = None
+    tags: list[str]
+    demo_url: str = "#"
+    github_url: str = "#"
+
+def verify_admin_key(x_api_key: str = Header(...)) -> str:
+    if x_api_key != ADMIN_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing admin API key"
+        )
+    return x_api_key
+
+@app.post("/api/projects", status_code=status.HTTP_201_CREATED)
+def create_project(
+    payload: ProjectCreate,
+    db: DbSession,
+    _: str = Depends(verify_admin_key)
+) -> dict[str, Any]:
+    new_project = ProjectModel(
+        title=payload.title,
+        description=payload.description,
+        tags=payload.tags,
+        demo_url=payload.demo_url,
+        github_url=payload.github_url,
+    )
+    db.add(new_project)
+    db.commit()
+    db.refresh(new_project)
+    
+    return {
+        "status": "success",
+        "project": {
+            "id": new_project.id,
+            "title": new_project.title,
+            "description": new_project.description,
+            "tags": new_project.tags,
+            "demo_url": new_project.demo_url,
+            "github_url": new_project.github_url,
+        },
+    }
 
 
 # Dependency to check X-API-Key header
@@ -126,31 +163,6 @@ def get_projects(db: DbSession, tag: str | None = None) -> list[dict[str, Any]]:
             if any(t.lower() == normalized_tag for t in p["tags"])
         ]
     return project_list
-
-
-@app.post("/api/projects")
-def create_project(payload: ProjectCreate, db: DbSession) -> dict[str, Any]:
-    new_project = ProjectModel(
-        title=payload.title,
-        description=payload.description,
-        tags=payload.tags,
-        demo_url=payload.demo_url,
-        github_url=payload.github_url,
-    )
-    db.add(new_project)
-    db.commit()
-    db.refresh(new_project)
-    return {
-        "status": "success",
-        "project": {
-            "id": new_project.id,
-            "title": new_project.title,
-            "description": new_project.description,
-            "tags": new_project.tags,
-            "demo_url": new_project.demo_url,
-            "github_url": new_project.github_url,
-        },
-    }
 
 
 @app.post("/api/contact")
